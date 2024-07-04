@@ -49,6 +49,7 @@ tauri-plugin-updater = { path = "../../../plugins/updater", version = "2.0.0-bet
 tauri-plugin-barcode-scanner = { path = "../../../plugins/barcode-scanner/", version = "2.0.0-beta.7" }
 tauri-plugin-nfc = { path = "../../../plugins/nfc", version = "2.0.0-beta.6" }
 tauri-plugin-biometric = { path = "../../../plugins/biometric/", version = "2.0.0-beta.6" }
+tauri-plugin-geolocation = { path = "../../../plugins/geolocation", version = "1.0.0" }
 
 [target."cfg(target_os = \"windows\")".dependencies]
 window-shadows = "0.2"

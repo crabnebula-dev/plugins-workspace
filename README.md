@@ -12,6 +12,7 @@
 | [dialog](plugins/dialog)                        | Native system dialogs for opening and saving files along with message dialogs.                                                                                                   | ✅  | ✅  | ✅  | ✅  | ✅ |
 | [fs](plugins/fs)                                | Access the file system.                                | ✅   | ✅   | ✅   | ?   | ?  |
 | [global-shortcut](plugins/global-shortcut)      | Register global shortcuts.                             | ✅  | ✅  | ✅  | ?   | ?  |
+| [geolocation](plugins/geolocation)              | Allows your mobile application to use geolocation.     | ?   | ?   | ?   | ✅  | ✅  |
 | [http](plugins/http)                            | Access the HTTP client written in Rust.                | ✅   | ✅   | ✅   | ✅   | ✅  |
 | [localhost](plugins/localhost)                  | Use a localhost server in production apps.             | ✅  | ✅  | ✅  | ?   | ?  |
 | [log](plugins/log)                              | Configurable logging.                                  | ✅  | ✅  | ✅  | ✅  | ✅ |

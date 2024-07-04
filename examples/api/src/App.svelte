@@ -19,6 +19,7 @@
   import WebRTC from "./views/WebRTC.svelte";
   import Scanner from "./views/Scanner.svelte";
   import Biometric from "./views/Biometric.svelte";
+  import Geolocation from "./views/Geolocation.svelte";
 
   import { onMount, tick } from "svelte";
   import { ask } from "@tauri-apps/plugin-dialog";
@@ -118,6 +119,11 @@
     isMobile && {
       label: "Biometric",
       component: Biometric,
+      icon: "i-ph-scan",
+    },
+    isMobile && {
+      label: "Geolocation",
+      component: Geolocation,
       icon: "i-ph-scan",
     },
   ];

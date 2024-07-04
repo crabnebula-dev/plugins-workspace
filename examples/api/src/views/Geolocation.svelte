@@ -14,6 +14,7 @@
     {
       enableHighAccuracy: true,
       timeout: 0,
+      // TODO: Play around with this field
       maximumAge: 500,
     },
     (e) => {
@@ -34,6 +35,8 @@
     .catch((e) => alert(e));
 </script>
 
+<!-- TODO: Remove MapLibre popup -->
+<!-- TODO: Add "Searching you location" loader -->
 <MapLibre
   center={marker}
   zoom={14}
@@ -47,7 +50,9 @@
 
 <style>
   :global(.map) {
-    height: 400px;
+    /* Make relative to actual size */
+    padding: 50%;
     border-radius: 14px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
   }
 </style>

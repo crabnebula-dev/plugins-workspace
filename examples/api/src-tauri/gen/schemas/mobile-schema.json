@@ -4901,6 +4901,110 @@
           ]
         },
         {
+          "type": "string",
+          "enum": [
+            "geolocation:default"
+          ]
+        },
+        {
+          "description": "geolocation:allow-check-permissions -> Enables the check_permissions command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:allow-check-permissions"
+          ]
+        },
+        {
+          "description": "geolocation:allow-clear-permissions -> Enables the clear_permissions command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:allow-clear-permissions"
+          ]
+        },
+        {
+          "description": "geolocation:allow-clear-positions -> Enables the clear_positions command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:allow-clear-positions"
+          ]
+        },
+        {
+          "description": "geolocation:allow-clear-watch -> Enables the clear_watch command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:allow-clear-watch"
+          ]
+        },
+        {
+          "description": "geolocation:allow-execute -> Enables the execute command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:allow-execute"
+          ]
+        },
+        {
+          "description": "geolocation:allow-get-current-position -> Enables the get_current_position command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:allow-get-current-position"
+          ]
+        },
+        {
+          "description": "geolocation:allow-watch-position -> Enables the watch_position command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:allow-watch-position"
+          ]
+        },
+        {
+          "description": "geolocation:deny-check-permissions -> Denies the check_permissions command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:deny-check-permissions"
+          ]
+        },
+        {
+          "description": "geolocation:deny-clear-permissions -> Denies the clear_permissions command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:deny-clear-permissions"
+          ]
+        },
+        {
+          "description": "geolocation:deny-clear-positions -> Denies the clear_positions command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:deny-clear-positions"
+          ]
+        },
+        {
+          "description": "geolocation:deny-clear-watch -> Denies the clear_watch command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:deny-clear-watch"
+          ]
+        },
+        {
+          "description": "geolocation:deny-execute -> Denies the execute command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:deny-execute"
+          ]
+        },
+        {
+          "description": "geolocation:deny-get-current-position -> Denies the get_current_position command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:deny-get-current-position"
+          ]
+        },
+        {
+          "description": "geolocation:deny-watch-position -> Denies the watch_position command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "geolocation:deny-watch-position"
+          ]
+        },
+        {
           "description": "http:default -> Allows all fetch operations",
           "type": "string",
           "enum": [

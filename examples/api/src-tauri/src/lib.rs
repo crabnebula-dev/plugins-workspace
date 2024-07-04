@@ -52,6 +52,7 @@ pub fn run() {
                 app.handle().plugin(tauri_plugin_barcode_scanner::init())?;
                 app.handle().plugin(tauri_plugin_nfc::init())?;
                 app.handle().plugin(tauri_plugin_biometric::init())?;
+                app.handle().plugin(tauri_plugin_geolocation::init())?;
             }
 
             let mut webview_window_builder =

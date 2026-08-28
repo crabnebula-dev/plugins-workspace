@@ -1,5 +1,212 @@
 # Changelog
 
+## \[2.5.9]
+
+### Dependencies
+
+- Upgraded to `fs-js@2.5.1`
+
+## \[2.5.8]
+
+- [`29712892`](https://github.com/tauri-apps/plugins-workspace/commit/29712892526cfc2d35c9002e0a56925084ae1b73) ([#3252](https://github.com/tauri-apps/plugins-workspace/pull/3252) by [@NVolcz](https://github.com/tauri-apps/plugins-workspace/../../NVolcz)) Correct Response header initialization to support cloning and ensure Set-Cookie visibility.
+
+### Dependencies
+
+- Upgraded to `fs-js@2.5.0`
+
+## \[2.5.7]
+
+- [`61e9b0ab`](https://github.com/tauri-apps/plugins-workspace/commit/61e9b0ab64c56cc5f7a5cb3b92b386671da6e0a2) ([#3228](https://github.com/tauri-apps/plugins-workspace/pull/3228)) Cleanup resource when the returned `ReadableStream.cancel` is called to avoid memory leaks
+
+## \[2.5.6]
+
+- [`b1dbee2c`](https://github.com/tauri-apps/plugins-workspace/commit/b1dbee2c55c1aa7b64732c4cc9f8cb20520b8666) ([#3210](https://github.com/tauri-apps/plugins-workspace/pull/3210) by [@FabianLars](https://github.com/tauri-apps/plugins-workspace/../../FabianLars)) Fixed an issue that caused the Origin header to always be `null` on macOS, iOS and Linux.
+
+## \[2.5.5]
+
+- [`e8915f17`](https://github.com/tauri-apps/plugins-workspace/commit/e8915f17e418138f0776870353cd6ce7254b0473) ([#2562](https://github.com/tauri-apps/plugins-workspace/pull/2562) by [@amrbashir](https://github.com/tauri-apps/plugins-workspace/../../amrbashir)) Fix aborting a request in the middle of a streaming response.
+
+### Dependencies
+
+- Upgraded to `fs-js@2.4.5`
+
+## \[2.5.4]
+
+- [`93426f85`](https://github.com/tauri-apps/plugins-workspace/commit/93426f85120f49beb9f40222bff45185a32d54a9) Fixed an issue that caused docs.rs builds to fail. No user facing changes.
+
+### Dependencies
+
+- Upgraded to `fs-js@2.4.4`
+
+## \[2.5.3]
+
+### Dependencies
+
+- Upgraded to `fs-js@2.4.3`
+
+## \[2.5.2]
+
+### Dependencies
+
+- Upgraded to `fs-js@2.4.2`
+
+## \[2.5.1]
+
+### Dependencies
+
+- Upgraded to `fs-js@2.4.1`
+
+## \[2.5.0]
+
+- [`f209b2f2`](https://github.com/tauri-apps/plugins-workspace/commit/f209b2f23cb29133c97ad5961fb46ef794dbe063) ([#2804](https://github.com/tauri-apps/plugins-workspace/pull/2804) by [@renovate](https://github.com/tauri-apps/plugins-workspace/../../renovate)) Updated tauri to 2.6
+
+### Dependencies
+
+- Upgraded to `fs-js@2.4.0`
+
+## \[2.4.4]
+
+- [`ff384cba`](https://github.com/tauri-apps/plugins-workspace/commit/ff384cbabe82ae715798a4ee49fd07ffcfbcdb5d) ([#2636](https://github.com/tauri-apps/plugins-workspace/pull/2636) by [@asomethings](https://github.com/tauri-apps/plugins-workspace/../../asomethings)) Properly handle responses with status code 204.
+
+### Dependencies
+
+- Upgraded to `fs-js@2.3.0`
+
+## \[2.4.3]
+
+- [`37c0477a`](https://github.com/tauri-apps/plugins-workspace/commit/37c0477afe926d326573f1827045875ce8bf8187) ([#2561](https://github.com/tauri-apps/plugins-workspace/pull/2561)) Add `zstd` cargo feature flag to enable `reqwest/zstd` flag.
+- [`9ebbfb2e`](https://github.com/tauri-apps/plugins-workspace/commit/9ebbfb2e3ccef8e0f277a0c02fe6b399b41feeb6) ([#1978](https://github.com/tauri-apps/plugins-workspace/pull/1978)) Persist cookies to disk and load it on next app start.
+
+### Dependencies
+
+- Upgraded to `fs-js@2.2.1`
+
+## \[2.4.2]
+
+- [`a15eedf3`](https://github.com/tauri-apps/plugins-workspace/commit/a15eedf37854344f7ffbcb0d373d848563817011) ([#2535](https://github.com/tauri-apps/plugins-workspace/pull/2535) by [@amrbashir](https://github.com/tauri-apps/plugins-workspace/../../amrbashir)) Fix `fetch` occasionally throwing an error due to trying to close the underline stream twice.
+
+## \[2.4.1]
+
+- [`d3183aa9`](https://github.com/tauri-apps/plugins-workspace/commit/d3183aa99da7ca67e627394132ddeb3b85ccef06) ([#2522](https://github.com/tauri-apps/plugins-workspace/pull/2522) by [@adrieljss](https://github.com/tauri-apps/plugins-workspace/../../adrieljss)) Fix `fetch` blocking until the whole response is read even if it was a streaming response.
+
+## \[2.4.0]
+
+- [`cb38f54f`](https://github.com/tauri-apps/plugins-workspace/commit/cb38f54f4a4ef30995283cd82166c62da17bac44) ([#2479](https://github.com/tauri-apps/plugins-workspace/pull/2479) by [@adrieljss](https://github.com/tauri-apps/plugins-workspace/../../adrieljss)) Add stream support for HTTP stream responses.
+
+## \[2.3.0]
+
+- [`10513649`](https://github.com/tauri-apps/plugins-workspace/commit/105136494c5a5bf4b1f1cc06cc71815412d17ec8) ([#2204](https://github.com/tauri-apps/plugins-workspace/pull/2204) by [@RickeyWard](https://github.com/tauri-apps/plugins-workspace/../../RickeyWard)) Add `dangerous-settings` feature flag and new JS `danger` option to disable tls hostname/certificate validation.
+
+## \[2.2.0]
+
+- [`3a79266b`](https://github.com/tauri-apps/plugins-workspace/commit/3a79266b8cf96a55b1ae6339d725567d45a44b1d) ([#2173](https://github.com/tauri-apps/plugins-workspace/pull/2173) by [@FabianLars](https://github.com/tauri-apps/plugins-workspace/../../FabianLars)) Bumped all plugins to `v2.2.0`. From now, the versions for the Rust and JavaScript packages of each plugin will be in sync with each other.
+
+### Dependencies
+
+- Upgraded to `fs@2.2.0`
+
+## \[2.0.2]
+
+### Dependencies
+
+- Upgraded to `fs-js@2.0.4`
+
+## \[2.0.4]
+
+- [`a3b553dd`](https://github.com/tauri-apps/plugins-workspace/commit/a3b553ddb403771aa699362c4e69a064b7731da5) ([#2079](https://github.com/tauri-apps/plugins-workspace/pull/2079) by [@amrbashir](https://github.com/tauri-apps/plugins-workspace/../../amrbashir)) Add tracing logs for requestes and responses behind `tracing` feature flag.
+
+### Dependencies
+
+- Upgraded to `fs@2.1.0`
+
+## \[2.0.3]
+
+### Dependencies
+
+- Upgraded to `fs@2.0.3`
+
+## \[2.0.1]
+
+- [`cfd48b3b`](https://github.com/tauri-apps/plugins-workspace/commit/cfd48b3b2ec0fccfc162197518694ed59ceda22c) ([#1941](https://github.com/tauri-apps/plugins-workspace/pull/1941) by [@Nipsuli](https://github.com/tauri-apps/plugins-workspace/../../Nipsuli)) Allow skipping sending `Origin` header in HTTP requests by setting `Origin` header to an empty string when calling `fetch`.
+- [`9b2840db`](https://github.com/tauri-apps/plugins-workspace/commit/9b2840db9464cf08db75806270e4441f0af81e5d) ([#1884](https://github.com/tauri-apps/plugins-workspace/pull/1884) by [@amrbashir](https://github.com/tauri-apps/plugins-workspace/../../amrbashir)) Retain headers order.
+
+## \[2.0.1]
+
+- [`a1a82208`](https://github.com/tauri-apps/plugins-workspace/commit/a1a82208ed4ab87f83310be0dc95428aec9ab241) ([#1873](https://github.com/tauri-apps/plugins-workspace/pull/1873) by [@lucasfernog](https://github.com/tauri-apps/plugins-workspace/../../lucasfernog)) Downgrade MSRV to 1.77.2 to support Windows 7.
+
+### Dependencies
+
+- Upgraded to `fs@2.0.1`
+
+## \[2.0.0]
+
+- [`e2c4dfb6`](https://github.com/tauri-apps/plugins-workspace/commit/e2c4dfb6af43e5dd8d9ceba232c315f5febd55c1) Update to tauri v2 stable release.
+
+### Dependencies
+
+- Upgraded to `fs@2.0.0`
+
+## \[2.0.0-rc.6]
+
+### Dependencies
+
+- Upgraded to `fs@2.0.0-rc.6`
+
+## \[2.0.0-rc.5]
+
+### Dependencies
+
+- Upgraded to `fs@2.0.0-rc.5`
+
+## \[2.0.0-rc.4]
+
+### Dependencies
+
+- Upgraded to `fs@2.0.0-rc.4`
+
+## \[2.0.0-rc.3]
+
+### Dependencies
+
+- Upgraded to `fs@2.0.0-rc.3`
+
+## \[2.0.0-rc.2]
+
+### Dependencies
+
+- Upgraded to `fs@2.0.0-rc.2`
+
+## \[2.0.0-rc.2]
+
+- [`e2e97db5`](https://github.com/tauri-apps/plugins-workspace/commit/e2e97db51983267f5be84d4f6f0278d58834d1f5) ([#1701](https://github.com/tauri-apps/plugins-workspace/pull/1701) by [@lucasfernog](https://github.com/tauri-apps/plugins-workspace/../../lucasfernog)) Update to tauri 2.0.0-rc.8
+
+## \[2.0.0-rc.1]
+
+- [`84f8bd5e`](https://github.com/tauri-apps/plugins-workspace/commit/84f8bd5e1ef22e664267380b5bbf756ebc5389c3) ([#1662](https://github.com/tauri-apps/plugins-workspace/pull/1662) by [@twlite](https://github.com/tauri-apps/plugins-workspace/../../twlite)) Fixed an issue with abort signal not aborting the fetch request.
+
+## \[2.0.0-rc.0]
+
+- [`9887d1`](https://github.com/tauri-apps/plugins-workspace/commit/9887d14bd0e971c4c0f5c1188fc4005d3fc2e29e) Update to tauri RC.
+
+### Dependencies
+
+- Upgraded to `fs@2.0.0-rc.0`
+
+## \[2.0.0-beta.9]
+
+- [`99d6ac0f`](https://github.com/tauri-apps/plugins-workspace/commit/99d6ac0f9506a6a4a1aa59c728157190a7441af6) ([#1606](https://github.com/tauri-apps/plugins-workspace/pull/1606) by [@FabianLars](https://github.com/tauri-apps/plugins-workspace/../../FabianLars)) The JS packages now specify the *minimum* `@tauri-apps/api` version instead of a single exact version.
+- [`6de87966`](https://github.com/tauri-apps/plugins-workspace/commit/6de87966ecc00ad9d91c25be452f1f46bd2b7e1f) ([#1597](https://github.com/tauri-apps/plugins-workspace/pull/1597) by [@Legend-Master](https://github.com/tauri-apps/plugins-workspace/../../Legend-Master)) Update to tauri beta.25.
+
+## \[2.0.0-beta.8]
+
+- [`ac9a25cc`](https://github.com/tauri-apps/plugins-workspace/commit/ac9a25cc12ee2b325f00212ba74316da3369bde5) ([#1395](https://github.com/tauri-apps/plugins-workspace/pull/1395) by [@amrbashir](https://github.com/tauri-apps/plugins-workspace/../../amrbashir)) Fix cancelling requests using `AbortSignal`.
+- [`a6654932`](https://github.com/tauri-apps/plugins-workspace/commit/a66549329c60dea35e3a06a38c357e368c9053a1) ([#1526](https://github.com/tauri-apps/plugins-workspace/pull/1526) by [@amrbashir](https://github.com/tauri-apps/plugins-workspace/../../amrbashir)) Fix missing `Set-Cookie` headers in the response which meant `request.headers.getSetCookie()` always returned empty array.
+- [`22a17980`](https://github.com/tauri-apps/plugins-workspace/commit/22a17980ff4f6f8c40adb1b8f4ffc6dae2fe7e30) ([#1537](https://github.com/tauri-apps/plugins-workspace/pull/1537) by [@lucasfernog](https://github.com/tauri-apps/plugins-workspace/../../lucasfernog)) Update to tauri beta.24.
+
+## \[2.0.0-beta.7]
+
+- [`76daee7a`](https://github.com/tauri-apps/plugins-workspace/commit/76daee7aafece34de3092c86e531cf9eb1138989) ([#1512](https://github.com/tauri-apps/plugins-workspace/pull/1512) by [@renovate](https://github.com/tauri-apps/plugins-workspace/../../renovate)) Update to tauri beta.23.
+
 ## \[2.0.0-beta.6]
 
 - [`0f739dbc`](https://github.com/tauri-apps/plugins-workspace/commit/0f739dbc483a1f091977cbe575c3862fd39f8cf1) ([#1392](https://github.com/tauri-apps/plugins-workspace/pull/1392) by [@amrbashir](https://github.com/tauri-apps/plugins-workspace/../../amrbashir)) Allow setting `Origin` header when `unsafe-headers` feature flag is active.
@@ -112,87 +319,3 @@
 ## \[2.0.0-alpha.0]
 
 - [`717ae67`](https://github.com/tauri-apps/plugins-workspace/commit/717ae670978feb4492fac1f295998b93f2b9347f)([#371](https://github.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  /717ae670978feb4492fac1f295998b93f2b9347f)([#371](https://github.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  ace/pull/371)) First v2 alpha release!
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  /717ae670978feb4492fac1f295998b93f2b9347f)([#371](https://github.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  ace/pull/371)) First v2 alpha release!
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  lpha release!
-  !
-  371\)) First v2 alpha release!
-  ub.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  ace/pull/371)) First v2 alpha release!
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  lpha release!
-  !
-  371\)) First v2 alpha release!
-  lpha release!
-  !
-  371\)) First v2 alpha release!
-t v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  ace/pull/371)) First v2 alpha release!
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  !
-  371\)) First v2 alpha release!
-  lpha release!
-  !
-  371\)) First v2 alpha release!
-  lpha release!
-  !
-  371\)) First v2 alpha release!

@@ -1,5 +1,77 @@
 # Changelog
 
+## \[2.4.0]
+
+- [`ad910b11`](https://github.com/tauri-apps/plugins-workspace/commit/ad910b1135d5cb57a67ca022ae6beb0dca460f9c) ([#2991](https://github.com/tauri-apps/plugins-workspace/pull/2991) by [@velocitysystems](https://github.com/tauri-apps/plugins-workspace/../../velocitysystems)) Upload plugin now supports specifying an HTTP method i.e. POST, PUT etc.
+
+## \[2.3.2]
+
+- [`93426f85`](https://github.com/tauri-apps/plugins-workspace/commit/93426f85120f49beb9f40222bff45185a32d54a9) Fixed an issue that caused docs.rs builds to fail. No user facing changes.
+
+## \[2.3.1]
+
+- [`b7292030`](https://github.com/tauri-apps/plugins-workspace/commit/b7292030594daa04e78979214478031241b6e38e) ([#2838](https://github.com/tauri-apps/plugins-workspace/pull/2838) by [@velocitysystems](https://github.com/tauri-apps/plugins-workspace/../../velocitysystems)) Fix `download` and `upload` locks main thread on Android.
+  Use Tokio to spawn task when invoking commands.
+
+## \[2.3.0]
+
+- [`f209b2f2`](https://github.com/tauri-apps/plugins-workspace/commit/f209b2f23cb29133c97ad5961fb46ef794dbe063) ([#2804](https://github.com/tauri-apps/plugins-workspace/pull/2804) by [@renovate](https://github.com/tauri-apps/plugins-workspace/../../renovate)) Updated tauri to 2.6
+
+## \[2.2.2]
+
+- [`f634e524`](https://github.com/tauri-apps/plugins-workspace/commit/f634e5248ebe428f8305a59f74c13fc15147fb8e) This is an "empty" release to update the plugins' source files on crates.io and docs.rs. This should fix docs.rs build failures for projects using tauri plugins as dependencies.
+
+## \[2.2.1]
+
+- [`ca7395a5`](https://github.com/tauri-apps/plugins-workspace/commit/ca7395a5ce971cbac25fb54285056edf3dd84e1f) ([#2378](https://github.com/tauri-apps/plugins-workspace/pull/2378) by [@FabianLars](https://github.com/tauri-apps/plugins-workspace/../../FabianLars)) the `rustls-tls` feature is now enabled by default
+
+## \[2.2.1]
+
+- [`05c62d73`](https://github.com/tauri-apps/plugins-workspace/commit/05c62d731fa48fd06b8cb3694a962d8cb0db8619) ([#1523](https://github.com/tauri-apps/plugins-workspace/pull/1523) by [@enri90](https://github.com/tauri-apps/plugins-workspace/../../enri90)) Added post request on download function
+
+## \[2.2.0]
+
+- [`5dadd205`](https://github.com/tauri-apps/plugins-workspace/commit/5dadd205f5596c9607457dd015a2f9d7fc48a2db) ([#2033](https://github.com/tauri-apps/plugins-workspace/pull/2033) by [@514sid](https://github.com/tauri-apps/plugins-workspace/../../514sid)) Added a new field `progressTotal` to track the total amount of data transferred during the upload/download process.
+
+## \[2.1.0]
+
+- [`87cc5852`](https://github.com/tauri-apps/plugins-workspace/commit/87cc58527d769960427a2f46bb10532f5dcf7ace) ([#1797](https://github.com/tauri-apps/plugins-workspace/pull/1797) by [@VirtualPirate](https://github.com/tauri-apps/plugins-workspace/../../VirtualPirate)) Added feature for calculating `transfer_speed` during file uploads and downloads
+
+## \[2.0.1]
+
+- [`a1a82208`](https://github.com/tauri-apps/plugins-workspace/commit/a1a82208ed4ab87f83310be0dc95428aec9ab241) ([#1873](https://github.com/tauri-apps/plugins-workspace/pull/1873) by [@lucasfernog](https://github.com/tauri-apps/plugins-workspace/../../lucasfernog)) Downgrade MSRV to 1.77.2 to support Windows 7.
+
+## \[2.0.0]
+
+- [`e2c4dfb6`](https://github.com/tauri-apps/plugins-workspace/commit/e2c4dfb6af43e5dd8d9ceba232c315f5febd55c1) Update to tauri v2 stable release.
+
+## \[2.0.0-rc.2]
+
+### bug
+
+- [`1d9741b5`](https://github.com/tauri-apps/plugins-workspace/commit/1d9741b52bb242d32b2ffd46fb4343a501cbd54b) ([#1783](https://github.com/tauri-apps/plugins-workspace/pull/1783) by [@fxsalazar](https://github.com/tauri-apps/plugins-workspace/../../fxsalazar)) fix download content to file when unsuccessful response
+
+## \[2.0.0-rc.1]
+
+- [`e2e97db5`](https://github.com/tauri-apps/plugins-workspace/commit/e2e97db51983267f5be84d4f6f0278d58834d1f5) ([#1701](https://github.com/tauri-apps/plugins-workspace/pull/1701) by [@lucasfernog](https://github.com/tauri-apps/plugins-workspace/../../lucasfernog)) Update to tauri 2.0.0-rc.8
+
+## \[2.0.0-rc.0]
+
+- [`9887d1`](https://github.com/tauri-apps/plugins-workspace/commit/9887d14bd0e971c4c0f5c1188fc4005d3fc2e29e) Update to tauri RC.
+
+## \[2.0.0-beta.9]
+
+- [`99d6ac0f`](https://github.com/tauri-apps/plugins-workspace/commit/99d6ac0f9506a6a4a1aa59c728157190a7441af6) ([#1606](https://github.com/tauri-apps/plugins-workspace/pull/1606) by [@FabianLars](https://github.com/tauri-apps/plugins-workspace/../../FabianLars)) The JS packages now specify the *minimum* `@tauri-apps/api` version instead of a single exact version.
+- [`6de87966`](https://github.com/tauri-apps/plugins-workspace/commit/6de87966ecc00ad9d91c25be452f1f46bd2b7e1f) ([#1597](https://github.com/tauri-apps/plugins-workspace/pull/1597) by [@Legend-Master](https://github.com/tauri-apps/plugins-workspace/../../Legend-Master)) Update to tauri beta.25.
+
+## \[2.0.0-beta.8]
+
+- [`22a17980`](https://github.com/tauri-apps/plugins-workspace/commit/22a17980ff4f6f8c40adb1b8f4ffc6dae2fe7e30) ([#1537](https://github.com/tauri-apps/plugins-workspace/pull/1537) by [@lucasfernog](https://github.com/tauri-apps/plugins-workspace/../../lucasfernog)) Update to tauri beta.24.
+
+## \[2.0.0-beta.7]
+
+- [`76daee7a`](https://github.com/tauri-apps/plugins-workspace/commit/76daee7aafece34de3092c86e531cf9eb1138989) ([#1512](https://github.com/tauri-apps/plugins-workspace/pull/1512) by [@renovate](https://github.com/tauri-apps/plugins-workspace/../../renovate)) Update to tauri beta.23.
+
 ## \[2.0.0-beta.6]
 
 - [`9013854f`](https://github.com/tauri-apps/plugins-workspace/commit/9013854f42a49a230b9dbb9d02774765528a923f)([#1382](https://github.com/tauri-apps/plugins-workspace/pull/1382)) Update to tauri beta.22.
@@ -59,14 +131,3 @@
 ## \[2.0.0-alpha.0]
 
 - [`717ae67`](https://github.com/tauri-apps/plugins-workspace/commit/717ae670978feb4492fac1f295998b93f2b9347f)([#371](https://github.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!
-  te to alpha.11.
-
-## \[2.0.0-alpha.0]
-
-- [`717ae67`](https://github.com/tauri-apps/plugins-workspace/commit/717ae670978feb4492fac1f295998b93f2b9347f)([#371](https://github.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!
-  17ae67\`]\(https://github.com/tauri-apps/plugins-workspace/commit/717ae670978feb4492fac1f295998b93f2b9347f)([#371](https://github.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!
-  67\`]\(https://github.com/tauri-apps/plugins-workspace/commit/717ae670978feb4492fac1f295998b93f2b9347f)([#371](https://github.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!
-  717ae670978feb4492fac1f295998b93f2b9347f)([#371](https://github.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!
-  s-workspace/commit/717ae670978feb4492fac1f295998b93f2b9347f)([#371](https://github.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!
-  67\`]\(https://github.com/tauri-apps/plugins-workspace/commit/717ae670978feb4492fac1f295998b93f2b9347f)([#371](https://github.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!
-  717ae670978feb4492fac1f295998b93f2b9347f)([#371](https://github.com/tauri-apps/plugins-workspace/pull/371)) First v2 alpha release!

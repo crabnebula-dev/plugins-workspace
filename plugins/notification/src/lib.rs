@@ -2,9 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-//! [![](https://github.com/tauri-apps/plugins-workspace/raw/v2/plugins/notification/banner.png)](https://github.com/tauri-apps/plugins-workspace/tree/v2/plugins/notification)
-//!
 //! Send message notifications (brief auto-expiring OS window element) to your user. Can also be used with the Notification Web API.
+//!
+//! ## Cargo features
+//!
+//! - **windows7-compat**: Adds support for the legacy Windows 7 notification implementation and Windows-version detection.
 
 #![doc(
     html_logo_url = "https://github.com/tauri-apps/tauri/raw/dev/app-icon.png",
@@ -22,6 +24,7 @@ use tauri::{
 };
 
 pub use models::*;
+pub use tauri::plugin::PermissionState;
 
 #[cfg(desktop)]
 mod desktop;
@@ -35,9 +38,9 @@ mod models;
 pub use error::{Error, Result};
 
 #[cfg(desktop)]
-use desktop::Notification;
+pub use desktop::Notification;
 #[cfg(mobile)]
-use mobile::Notification;
+pub use mobile::Notification;
 
 /// The notification builder.
 #[derive(Debug)]
@@ -121,7 +124,7 @@ impl<R: Runtime> NotificationBuilder<R> {
 
     /// Identifier used to group multiple notifications.
     ///
-    /// https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent/1649872-threadidentifier
+    /// <https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent/1649872-threadidentifier>
     pub fn group(mut self, group: impl Into<String>) -> Self {
         self.data.group.replace(group.into());
         self
@@ -133,7 +136,7 @@ impl<R: Runtime> NotificationBuilder<R> {
         self
     }
 
-    /// The sound resource name. Only available on mobile.
+    /// The sound resource name for the notification.
     pub fn sound(mut self, sound: impl Into<String>) -> Self {
         self.data.sound.replace(sound.into());
         self
@@ -227,7 +230,10 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             commands::request_permission,
             commands::is_permission_granted
         ])
-        .js_init_script(include_str!("init-iife.js").to_string())
+        .js_init_script(include_str!("init-iife.js").replace(
+            "__TEMPLATE_windows__",
+            if cfg!(windows) { "true" } else { "false" },
+        ))
         .setup(|app, api| {
             #[cfg(mobile)]
             let notification = mobile::init(app, api)?;

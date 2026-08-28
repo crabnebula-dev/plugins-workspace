@@ -3,11 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-//! [![](https://github.com/tauri-apps/plugins-workspace/raw/v2/plugins/positioner/banner.png)](https://github.com/tauri-apps/plugins-workspace/tree/v2/plugins/positioner)
-//!
 //! A plugin for Tauri that helps position your windows at well-known locations.
 //!
-//! # Cargo features
+//! ## Cargo features
 //!
 //! - **tray-icon**: Enables tray-icon-relative positions.
 //!
@@ -63,10 +61,38 @@ async fn move_window<R: Runtime>(window: tauri::Window<R>, position: Position) -
     window.move_window(position)
 }
 
+#[cfg(feature = "tray-icon")]
+#[tauri::command]
+async fn move_window_constrained<R: Runtime>(
+    window: tauri::Window<R>,
+    position: Position,
+) -> Result<()> {
+    window.move_window_constrained(position)
+}
+
+#[cfg(feature = "tray-icon")]
+#[tauri::command]
+fn set_tray_icon_state<R: Runtime>(
+    app: AppHandle<R>,
+    position: PhysicalPosition<f64>,
+    size: PhysicalSize<f64>,
+) {
+    app.state::<Tray>()
+        .0
+        .lock()
+        .unwrap()
+        .replace((position, size));
+}
+
 /// The Tauri plugin that exposes [`WindowExt::move_window`] to the webview.
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
-    let plugin =
-        plugin::Builder::new("positioner").invoke_handler(tauri::generate_handler![move_window]);
+    let plugin = plugin::Builder::new("positioner").invoke_handler(tauri::generate_handler![
+        move_window,
+        #[cfg(feature = "tray-icon")]
+        move_window_constrained,
+        #[cfg(feature = "tray-icon")]
+        set_tray_icon_state
+    ]);
 
     #[cfg(feature = "tray-icon")]
     let plugin = plugin.setup(|app_handle, _api| {

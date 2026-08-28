@@ -2,8 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-//! [![](https://github.com/tauri-apps/plugins-workspace/raw/v2/plugins/cli/banner.png)](https://github.com/tauri-apps/plugins-workspace/tree/v2/plugins/cli)
-//!
 //! Parse arguments from your Command Line Interface.
 //!
 //! - Supported platforms: Windows, Linux and macOS.
@@ -23,14 +21,19 @@ mod error;
 mod parser;
 
 use config::{Arg, Config};
-pub use error::Error;
-type Result<T> = std::result::Result<T, Error>;
+
+pub use error::{Error, Result};
+pub use parser::{ArgData, Matches, SubcommandMatches};
 
 pub struct Cli<R: Runtime>(PluginApi<R, Config>);
 
 impl<R: Runtime> Cli<R> {
     pub fn matches(&self) -> Result<parser::Matches> {
-        parser::get_matches(self.0.config(), self.0.app().package_info())
+        parser::get_matches(self.0.config(), self.0.app().package_info(), None)
+    }
+
+    pub fn matches_from(&self, args: Vec<String>) -> Result<parser::Matches> {
+        parser::get_matches(self.0.config(), self.0.app().package_info(), Some(args))
     }
 }
 

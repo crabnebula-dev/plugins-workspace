@@ -4,12 +4,12 @@
 
 package app.tauri.clipboard
 
-import android.R.attr.value
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
+import android.os.Build
 import app.tauri.annotation.Command
 import app.tauri.annotation.InvokeArg
 import app.tauri.annotation.TauriPlugin
@@ -59,6 +59,9 @@ internal class ReadClipDataSerializer @JvmOverloads constructor(t: Class<ReadCli
 
         jgen.writeEndObject()
       }
+      else -> {
+        throw Exception("unimplemented ReadClipData")
+      }
     }
 
     jgen.writeEndObject()
@@ -92,7 +95,11 @@ class ClipboardPlugin(private val activity: Activity) : Plugin(activity) {
     val clipData = when (args) {
       is WriteOptions.PlainText -> {
         ClipData.newPlainText(args.label, args.text)
+      } else -> {
+        invoke.reject("unimplemented WriteOptions")
+        return
       }
+
     }
 
     manager.setPrimaryClip(clipData)
@@ -119,5 +126,17 @@ class ClipboardPlugin(private val activity: Activity) : Plugin(activity) {
     }
 
     invoke.resolveObject(data)
+  }
+
+  @Command
+  fun clear(invoke: Invoke) {
+      if (manager.hasPrimaryClip()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+          manager.clearPrimaryClip()
+        } else {
+          manager.setPrimaryClip(ClipData.newPlainText("", ""))
+        }
+      }
+      invoke.resolve()
   }
 }

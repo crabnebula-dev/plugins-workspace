@@ -6,7 +6,13 @@
 #[allow(dead_code)]
 mod scope;
 
-const COMMANDS: &[&str] = &["fetch", "fetch_cancel", "fetch_send", "fetch_read_body"];
+const COMMANDS: &[&str] = &[
+    "fetch",
+    "fetch_cancel",
+    "fetch_send",
+    "fetch_read_body",
+    "fetch_cancel_body",
+];
 
 /// HTTP scope entry.
 #[derive(schemars::JsonSchema)]
@@ -47,22 +53,16 @@ enum HttpScopeEntry {
     },
 }
 
-// Ensure scope entry is kept up to date
-impl From<HttpScopeEntry> for scope::Entry {
-    fn from(value: HttpScopeEntry) -> Self {
-        let url = match value {
-            HttpScopeEntry::Value(url) => url,
-            HttpScopeEntry::Object { url } => url,
-        };
-
-        scope::Entry {
-            url: urlpattern::UrlPattern::parse(
-                urlpattern::UrlPatternInit::parse_constructor_string::<regex::Regex>(&url, None)
-                    .unwrap(),
-            )
-            .unwrap(),
-        }
-    }
+// Ensure `HttpScopeEntry` and `scope::EntryRaw` is kept in sync
+fn _f() {
+    match scope::EntryRaw::Value(String::new()) {
+        scope::EntryRaw::Value(url) => HttpScopeEntry::Value(url),
+        scope::EntryRaw::Object { url } => HttpScopeEntry::Object { url },
+    };
+    match HttpScopeEntry::Value(String::new()) {
+        HttpScopeEntry::Value(url) => scope::EntryRaw::Value(url),
+        HttpScopeEntry::Object { url } => scope::EntryRaw::Object { url },
+    };
 }
 
 fn main() {

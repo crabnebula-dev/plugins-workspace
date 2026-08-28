@@ -9,7 +9,7 @@ mod tray;
 use serde::Serialize;
 use tauri::{
     webview::{PageLoadEvent, WebviewWindowBuilder},
-    App, AppHandle, Manager, RunEvent, WebviewUrl,
+    App, AppHandle, Emitter, Listener, RunEvent, WebviewUrl,
 };
 
 #[derive(Clone, Serialize)]
@@ -36,7 +36,10 @@ pub fn run() {
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_upload::init())
         .setup(move |app| {
             #[cfg(desktop)]
             {
@@ -45,6 +48,8 @@ pub fn run() {
                 app.handle()
                     .plugin(tauri_plugin_global_shortcut::Builder::new().build())?;
                 app.handle()
+                    .plugin(tauri_plugin_window_state::Builder::new().build())?;
+                app.handle()
                     .plugin(tauri_plugin_updater::Builder::new().build())?;
             }
             #[cfg(mobile)]
@@ -52,6 +57,8 @@ pub fn run() {
                 app.handle().plugin(tauri_plugin_barcode_scanner::init())?;
                 app.handle().plugin(tauri_plugin_nfc::init())?;
                 app.handle().plugin(tauri_plugin_biometric::init())?;
+                app.handle().plugin(tauri_plugin_geolocation::init())?;
+                app.handle().plugin(tauri_plugin_haptics::init())?;
             }
 
             let mut webview_window_builder =
@@ -63,7 +70,7 @@ pub fn run() {
                     .title("Tauri API Validation")
                     .inner_size(1000., 800.)
                     .min_inner_size(600., 400.)
-                    .content_protected(true);
+                    .visible(false);
             }
 
             #[cfg(target_os = "windows")]
@@ -96,9 +103,28 @@ pub fn run() {
                     if let Ok(mut request) = server.recv() {
                         let mut body = Vec::new();
                         let _ = request.as_reader().read_to_end(&mut body);
+                        let mut headers = request.headers().to_vec();
+
+                        if !headers.iter().any(|header| header.field == tiny_http::HeaderField::from_bytes(b"Cookie").unwrap()) {
+                            let expires = time::OffsetDateTime::now_utc() + time::Duration::days(1);
+                            // RFC 1123 format
+                            let format = time::macros::format_description!(
+                                "[weekday repr:short], [day] [month repr:short] [year] [hour]:[minute]:[second] GMT"
+                            );
+                            let expires_str = expires.format(format).unwrap();
+                            headers.push(
+                                tiny_http::Header::from_bytes(
+                                    &b"Set-Cookie"[..],
+                                    format!("session-token=test-value; Secure; Path=/; Expires={expires_str}")
+                                        .as_bytes(),
+                                )
+                                .unwrap(),
+                            );
+                        }
+
                         let response = tiny_http::Response::new(
                             tiny_http::StatusCode(200),
-                            request.headers().to_vec(),
+                            headers,
                             std::io::Cursor::new(body),
                             request.body_length(),
                             None,

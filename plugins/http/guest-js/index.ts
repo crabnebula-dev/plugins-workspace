@@ -26,7 +26,7 @@
  * @module
  */
 
-import { invoke } from "@tauri-apps/api/core";
+import { invoke } from '@tauri-apps/api/core'
 
 /**
  * Configuration of a proxy that a Client should pass requests to.
@@ -37,34 +37,34 @@ export interface Proxy {
   /**
    * Proxy all traffic to the passed URL.
    */
-  all?: string | ProxyConfig;
+  all?: string | ProxyConfig
   /**
    * Proxy all HTTP traffic to the passed URL.
    */
-  http?: string | ProxyConfig;
+  http?: string | ProxyConfig
   /**
    * Proxy all HTTPS traffic to the passed URL.
    */
-  https?: string | ProxyConfig;
+  https?: string | ProxyConfig
 }
 
 export interface ProxyConfig {
   /**
    * The URL of the proxy server.
    */
-  url: string;
+  url: string
   /**
    * Set the `Proxy-Authorization` header using Basic auth.
    */
   basicAuth?: {
-    username: string;
-    password: string;
-  };
+    username: string
+    password: string
+  }
   /**
    * A configuration for filtering out requests that shouldn't be proxied.
    * Entries are expected to be comma-separated (whitespace between entries is ignored)
    */
-  noProxy?: string;
+  noProxy?: string
 }
 
 /**
@@ -77,14 +77,36 @@ export interface ClientOptions {
    * Defines the maximum number of redirects the client should follow.
    * If set to 0, no redirects will be followed.
    */
-  maxRedirections?: number;
+  maxRedirections?: number
   /** Timeout in milliseconds */
-  connectTimeout?: number;
+  connectTimeout?: number
   /**
    * Configuration of a proxy that a Client should pass requests to.
    */
-  proxy?: Proxy;
+  proxy?: Proxy
+  /**
+   * Configuration for dangerous settings on the client such as disabling SSL verification.
+   */
+  danger?: DangerousSettings
 }
+
+/**
+ * Configuration for dangerous settings on the client such as disabling SSL verification.
+ *
+ * @since 2.3.0
+ */
+export interface DangerousSettings {
+  /**
+   * Disables SSL verification.
+   */
+  acceptInvalidCerts?: boolean
+  /**
+   * Disables hostname verification.
+   */
+  acceptInvalidHostnames?: boolean
+}
+
+const ERROR_REQUEST_CANCELLED = 'Request cancelled'
 
 /**
  * Fetch a resource from the network. It returns a `Promise` that resolves to the
@@ -102,37 +124,43 @@ export interface ClientOptions {
  */
 export async function fetch(
   input: URL | Request | string,
-  init?: RequestInit & ClientOptions,
+  init?: RequestInit & ClientOptions
 ): Promise<Response> {
-  const maxRedirections = init?.maxRedirections;
-  const connectTimeout = init?.connectTimeout;
-  const proxy = init?.proxy;
+  // Optimistically check for abort signal and avoid doing any work
+  const signal = init?.signal
+  if (signal?.aborted) {
+    throw new Error(ERROR_REQUEST_CANCELLED)
+  }
+
+  const maxRedirections = init?.maxRedirections
+  const connectTimeout = init?.connectTimeout
+  const proxy = init?.proxy
+  const danger = init?.danger
 
   // Remove these fields before creating the request
   if (init) {
-    delete init.maxRedirections;
-    delete init.connectTimeout;
-    delete init.proxy;
+    delete init.maxRedirections
+    delete init.connectTimeout
+    delete init.proxy
+    delete init.danger
   }
-
-  const signal = init?.signal;
 
   const headers = init?.headers
     ? init.headers instanceof Headers
       ? init.headers
       : new Headers(init.headers)
-    : new Headers();
+    : new Headers()
 
-  const req = new Request(input, init);
-  const buffer = await req.arrayBuffer();
+  const req = new Request(input, init)
+  const buffer = await req.arrayBuffer()
   const data =
-    buffer.byteLength !== 0 ? Array.from(new Uint8Array(buffer)) : null;
+    buffer.byteLength !== 0 ? Array.from(new Uint8Array(buffer)) : null
 
   // append new headers created by the browser `Request` implementation,
   // if not already declared by the caller of this function
   for (const [key, value] of req.headers) {
     if (!headers.get(key)) {
-      headers.set(key, value);
+      headers.set(key, value)
     }
   }
 
@@ -141,7 +169,7 @@ export async function fetch(
       ? Array.from(headers.entries())
       : Array.isArray(headers)
         ? headers
-        : Object.entries(headers);
+        : Object.entries(headers)
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const mappedHeaders: Array<[string, string]> = headersArray.map(
@@ -149,11 +177,16 @@ export async function fetch(
       name,
       // we need to ensure we have all header values as strings
       // eslint-disable-next-line
-      typeof val === "string" ? val : (val as any).toString(),
-    ],
-  );
+      typeof val === 'string' ? val : (val as any).toString()
+    ]
+  )
 
-  const rid = await invoke<number>("plugin:http|fetch", {
+  // Optimistically check for abort signal and avoid doing any work on the Rust side
+  if (signal?.aborted) {
+    throw new Error(ERROR_REQUEST_CANCELLED)
+  }
+
+  const rid = await invoke<number>('plugin:http|fetch', {
     clientConfig: {
       method: req.method,
       url: req.url,
@@ -162,21 +195,29 @@ export async function fetch(
       maxRedirections,
       connectTimeout,
       proxy,
-    },
-  });
+      danger
+    }
+  })
 
-  signal?.addEventListener("abort", () => {
-    void invoke("plugin:http|fetch_cancel", {
-      rid,
-    });
-  });
+  const abort = () => invoke('plugin:http|fetch_cancel', { rid })
+
+  // Optimistically check for abort signal
+  // and avoid doing any work after doing intial work on the Rust side
+  if (signal?.aborted) {
+    // we don't care about the result of this proimse
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    abort()
+    throw new Error(ERROR_REQUEST_CANCELLED)
+  }
+
+  signal?.addEventListener('abort', () => void abort())
 
   interface FetchSendResponse {
-    status: number;
-    statusText: string;
-    headers: [[string, string]];
-    url: string;
-    rid: number;
+    status: number
+    statusText: string
+    headers: [[string, string]]
+    url: string
+    rid: number
   }
 
   const {
@@ -184,33 +225,93 @@ export async function fetch(
     statusText,
     url,
     headers: responseHeaders,
-    rid: responseRid,
-  } = await invoke<FetchSendResponse>("plugin:http|fetch_send", {
-    rid,
-  });
+    rid: responseRid
+  } = await invoke<FetchSendResponse>('plugin:http|fetch_send', {
+    rid
+  })
 
-  const body = await invoke<ArrayBuffer | number[]>(
-    "plugin:http|fetch_read_body",
-    {
-      rid: responseRid,
-    },
-  );
+  const dropBody = () => {
+    return invoke('plugin:http|fetch_cancel_body', { rid: responseRid })
+  }
 
-  const res = new Response(
-    body instanceof ArrayBuffer && body.byteLength !== 0
-      ? body
-      : body instanceof Array && body.length > 0
-        ? new Uint8Array(body)
-        : null,
-    {
-      headers: responseHeaders,
-      status,
-      statusText,
-    },
-  );
+  const readChunk = async (
+    controller: ReadableStreamDefaultController<Uint8Array>
+  ) => {
+    let data: ArrayBuffer
+    try {
+      data = await invoke('plugin:http|fetch_read_body', {
+        rid: responseRid
+      })
+    } catch (e) {
+      // close the stream if an error occurs
+      // and drop the body on Rust side
+      controller.error(e)
+      void dropBody()
+      return
+    }
 
-  // url is read only but seems like we can do this
-  Object.defineProperty(res, "url", { value: url });
+    const dataUint8 = new Uint8Array(data)
+    const lastByte = dataUint8[dataUint8.byteLength - 1]
+    const actualData = dataUint8.slice(0, dataUint8.byteLength - 1)
 
-  return res;
+    // close when the signal to close (last byte is 1) is sent from the IPC.
+    if (lastByte === 1) {
+      controller.close()
+      return
+    }
+
+    controller.enqueue(actualData)
+  }
+
+  // no body for 101, 103, 204, 205 and 304
+  // see https://fetch.spec.whatwg.org/#null-body-status
+  const body = [101, 103, 204, 205, 304].includes(status)
+    ? null
+    : new ReadableStream<Uint8Array>({
+        start: (controller) => {
+          // listen for abort events to cancel reading
+          signal?.addEventListener('abort', () => {
+            controller.error(ERROR_REQUEST_CANCELLED)
+            void dropBody()
+          })
+        },
+        pull: (controller) => readChunk(controller),
+        cancel: () => {
+          // Ensure body resources are released on stream cancellation
+          void dropBody()
+        }
+      })
+
+  const res = new Response(body, {
+    status,
+    statusText
+  })
+
+  // `Response.url` cannot be set via the constructor, so we define it manually
+  Object.defineProperty(res, 'url', { value: url, writable: false })
+
+  // Expose `set-cookie` via `response.headers` (and `getSetCookie()` where
+  // supported). This is not Fetch-spec compliant for network responses in
+  // browsers, where `set-cookie` is treated as a forbidden response
+  // header and is generally not readable from JavaScript.
+  Object.defineProperty(res, 'headers', {
+    value: new Headers(responseHeaders),
+    writable: false
+  })
+
+  // Patch clone() per-instance so cloning preserves the overridden properties
+  const originalClone = res.clone.bind(res)
+  Object.defineProperty(res, 'clone', {
+    value: () => {
+      const cloned = originalClone()
+      Object.defineProperty(cloned, 'url', { value: url, writable: false })
+      Object.defineProperty(cloned, 'headers', {
+        value: new Headers(responseHeaders),
+        writable: false
+      })
+      return cloned
+    }
+  })
+
+  return res
 }

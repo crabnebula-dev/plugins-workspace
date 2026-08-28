@@ -14,29 +14,17 @@
         }
       ]
     },
-    "app:default",
-    "resources:default",
-    "fs:default",
-    "menu:default",
-    "path:default",
-    "tray:default",
-    "event:default",
-    "window:default",
-    "window:allow-minimize",
-    "window:allow-maximize",
-    "window:allow-unmaximize",
-    "window:allow-close",
-    "window:allow-start-dragging",
-    "image:default",
+    "core:default",
+    "core:app:allow-set-app-theme",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-close",
+    "core:window:allow-start-dragging",
     "notification:default",
     "os:allow-platform",
-    "dialog:allow-open",
-    "dialog:allow-ask",
-    "dialog:allow-save",
-    "dialog:allow-confirm",
-    "dialog:allow-message",
+    "dialog:default",
     {
-      "identifier": "shell:allow-execute",
+      "identifier": "shell:allow-spawn",
       "allow": [
         {
           "name": "sh",
@@ -44,7 +32,7 @@
           "args": [
             "-c",
             {
-              "validator": "\\S+"
+              "validator": ".+"
             }
           ]
         },
@@ -54,12 +42,13 @@
           "args": [
             "/C",
             {
-              "validator": "\\S+"
+              "validator": ".+"
             }
           ]
         }
       ]
     },
+    "shell:default",
     "shell:allow-kill",
     "shell:allow-stdin-write",
     "process:allow-exit",
@@ -68,6 +57,11 @@
     "clipboard-manager:allow-write-text",
     "clipboard-manager:allow-read-image",
     "clipboard-manager:allow-write-image",
+    "fs:default",
+    "fs:read-meta",
+    "fs:allow-open",
+    "fs:allow-write",
+    "fs:allow-read",
     "fs:allow-rename",
     "fs:allow-mkdir",
     "fs:allow-remove",
@@ -78,10 +72,29 @@
       "identifier": "fs:scope-appdata-recursive",
       "allow": [
         {
+          "path": "$APPDATA/db/"
+        },
+        {
           "path": "$APPDATA/db/**"
         }
       ],
       "deny": ["$APPDATA/db/*.stronghold"]
-    }
+    },
+    "store:default",
+    "opener:default",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "https://*",
+          "app": "inAppBrowser"
+        }
+      ]
+    },
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [{ "path": "$APPDATA" }, { "path": "$APPDATA/**" }]
+    },
+    "upload:default"
   ]
 }

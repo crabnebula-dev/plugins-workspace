@@ -8,49 +8,49 @@
  * @module
  */
 
-import { invoke } from "@tauri-apps/api/core";
+import { invoke } from '@tauri-apps/api/core'
 
 /** @ignore */
 declare global {
   interface Window {
     __TAURI_OS_PLUGIN_INTERNALS__: {
-      eol: string;
-      os_type: OsType;
-      platform: Platform;
-      family: Family;
-      version: string;
-      arch: Arch;
-      exe_extension: string;
-    };
+      eol: string
+      os_type: OsType
+      platform: Platform
+      family: Family
+      version: string
+      arch: Arch
+      exe_extension: string
+    }
   }
 }
 
 type Platform =
-  | "linux"
-  | "macos"
-  | "ios"
-  | "freebsd"
-  | "dragonfly"
-  | "netbsd"
-  | "openbsd"
-  | "solaris"
-  | "android"
-  | "windows";
+  | 'linux'
+  | 'macos'
+  | 'ios'
+  | 'freebsd'
+  | 'dragonfly'
+  | 'netbsd'
+  | 'openbsd'
+  | 'solaris'
+  | 'android'
+  | 'windows'
 
-type OsType = "linux" | "windows" | "macos" | "ios" | "android";
+type OsType = 'linux' | 'windows' | 'macos' | 'ios' | 'android'
 
 type Arch =
-  | "x86"
-  | "x86_64"
-  | "arm"
-  | "aarch64"
-  | "mips"
-  | "mips64"
-  | "powerpc"
-  | "powerpc64"
-  | "riscv64"
-  | "s390x"
-  | "sparc64";
+  | 'x86'
+  | 'x86_64'
+  | 'arm'
+  | 'aarch64'
+  | 'mips'
+  | 'mips64'
+  | 'powerpc'
+  | 'powerpc64'
+  | 'riscv64'
+  | 's390x'
+  | 'sparc64'
 
 /**
  * Returns the operating system-specific end-of-line marker.
@@ -60,7 +60,7 @@ type Arch =
  * @since 2.0.0
  * */
 function eol(): string {
-  return window.__TAURI_OS_PLUGIN_INTERNALS__.eol;
+  return window.__TAURI_OS_PLUGIN_INTERNALS__.eol
 }
 
 /**
@@ -70,14 +70,14 @@ function eol(): string {
  * @example
  * ```typescript
  * import { platform } from '@tauri-apps/plugin-os';
- * const platformName = await platform();
+ * const platformName = platform();
  * ```
  *
  * @since 2.0.0
  *
  */
 function platform(): Platform {
-  return window.__TAURI_OS_PLUGIN_INTERNALS__.platform;
+  return window.__TAURI_OS_PLUGIN_INTERNALS__.platform
 }
 
 /**
@@ -85,29 +85,29 @@ function platform(): Platform {
  * @example
  * ```typescript
  * import { version } from '@tauri-apps/plugin-os';
- * const osVersion = await version();
+ * const osVersion = version();
  * ```
  *
  * @since 2.0.0
  */
 function version(): string {
-  return window.__TAURI_OS_PLUGIN_INTERNALS__.version;
+  return window.__TAURI_OS_PLUGIN_INTERNALS__.version
 }
 
-type Family = "unix" | "windows";
+type Family = 'unix' | 'windows'
 
 /**
  * Returns the current operating system family. Possible values are `'unix'`, `'windows'`.
  * @example
  * ```typescript
  * import { family } from '@tauri-apps/plugin-os';
- * const family = await family();
+ * const family = family();
  * ```
  *
  * @since 2.0.0
  */
 function family(): Family {
-  return window.__TAURI_OS_PLUGIN_INTERNALS__.family;
+  return window.__TAURI_OS_PLUGIN_INTERNALS__.family
 }
 
 /**
@@ -115,13 +115,13 @@ function family(): Family {
  * @example
  * ```typescript
  * import { type } from '@tauri-apps/plugin-os';
- * const osType = await type();
+ * const osType = type();
  * ```
  *
  * @since 2.0.0
  */
 function type(): OsType {
-  return window.__TAURI_OS_PLUGIN_INTERNALS__.os_type;
+  return window.__TAURI_OS_PLUGIN_INTERNALS__.os_type
 }
 
 /**
@@ -130,13 +130,13 @@ function type(): OsType {
  * @example
  * ```typescript
  * import { arch } from '@tauri-apps/plugin-os';
- * const archName = await arch();
+ * const archName = arch();
  * ```
  *
  * @since 2.0.0
  */
 function arch(): Arch {
-  return window.__TAURI_OS_PLUGIN_INTERNALS__.arch;
+  return window.__TAURI_OS_PLUGIN_INTERNALS__.arch
 }
 
 /**
@@ -144,13 +144,13 @@ function arch(): Arch {
  * @example
  * ```typescript
  * import { exeExtension } from '@tauri-apps/plugin-os';
- * const exeExt = await exeExtension();
+ * const exeExt = exeExtension();
  * ```
  *
  * @since 2.0.0
  */
 function exeExtension(): string {
-  return window.__TAURI_OS_PLUGIN_INTERNALS__.exe_extension;
+  return window.__TAURI_OS_PLUGIN_INTERNALS__.exe_extension
 }
 
 /**
@@ -167,7 +167,7 @@ function exeExtension(): string {
  * @since 2.0.0
  */
 async function locale(): Promise<string | null> {
-  return await invoke("plugin:os|locale");
+  return await invoke('plugin:os|locale')
 }
 
 /**
@@ -179,7 +179,7 @@ async function locale(): Promise<string | null> {
  * ```
  */
 async function hostname(): Promise<string | null> {
-  return await invoke("plugin:os|hostname");
+  return await invoke('plugin:os|hostname')
 }
 
 export {
@@ -191,6 +191,6 @@ export {
   arch,
   locale,
   exeExtension,
-  hostname,
-};
-export type { Platform, OsType, Arch, Family };
+  hostname
+}
+export type { Platform, OsType, Arch, Family }

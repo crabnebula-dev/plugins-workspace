@@ -16,24 +16,24 @@ enum ScanKind: Decodable {
 
 struct ScanOptions: Decodable {
   let kind: ScanKind
-  let keepSessionAlive: Bool?
-  let message: String?
-  let successMessage: String?
+  var keepSessionAlive: Bool?
+  var message: String?
+  var successMessage: String?
 }
 
 struct NDEFRecord: Decodable {
-  let format: UInt8?
-  let kind: [UInt8]?
-  let identifier: [UInt8]?
-  let payload: [UInt8]?
+  var format: UInt8?
+  var kind: [UInt8]?
+  var identifier: [UInt8]?
+  var payload: [UInt8]?
 }
 
 struct WriteOptions: Decodable {
-  let kind: ScanKind?
+  var kind: ScanKind?
   let records: [NDEFRecord]
-  let message: String?
-  let successMessage: String?
-  let successfulReadMessage: String?
+  var message: String?
+  var successMessage: String?
+  var successfulReadMessage: String?
 }
 
 enum TagProcessMode {
@@ -149,6 +149,7 @@ class NfcPlugin: Plugin, NFCTagReaderSessionDelegate, NFCNDEFReaderSessionDelega
   func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
     Logger.error("Tag reader session error \(error)")
     self.session?.invoke.reject("session invalidated with error: \(error)")
+    self.session = nil
   }
 
   func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
@@ -200,6 +201,7 @@ class NfcPlugin: Plugin, NFCTagReaderSessionDelegate, NFCNDEFReaderSessionDelega
     } else {
       Logger.error("NDEF reader session error \(error)")
       self.session?.invoke.reject("session invalidated with error: \(error)")
+      self.session = nil
     }
   }
 

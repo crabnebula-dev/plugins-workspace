@@ -2,9 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-//! [![](https://github.com/tauri-apps/plugins-workspace/raw/v2/plugins/websocket/banner.png)](https://github.com/tauri-apps/plugins-workspace/tree/v2/plugins/websocket)
+//! Open a WebSocket connection using a Rust client in JS.
 //!
-//! Expose a WebSocket server to your Tauri frontend.
+//! ## Cargo features
+//!
+//! - **rustls-tls** *(enabled by default)*: Enables TLS functionality provided by `rustls` with WebPKI roots.
+//! - **rustls-tls-native-roots**: Enables TLS functionality provided by `rustls` with the platform's native certificate roots.
+//! - **native-tls**: Enables TLS functionality provided by `native-tls`.
+//! - **native-tls-vendored**: Enables the `vendored` feature of `native-tls`.
+//!
+//! At least one TLS feature is required for `wss://`; plain `ws://` works without one.
 
 #![doc(
     html_logo_url = "https://github.com/tauri-apps/tauri/raw/dev/app-icon.png",
@@ -20,9 +27,17 @@ use tauri::{
     Manager, Runtime, State, Window,
 };
 use tokio::{net::TcpStream, sync::Mutex};
-#[cfg(any(feature = "rustls-tls", feature = "native-tls"))]
+#[cfg(any(
+    feature = "rustls-tls",
+    feature = "rustls-tls-native-roots",
+    feature = "native-tls"
+))]
 use tokio_tungstenite::connect_async_tls_with_config;
-#[cfg(not(any(feature = "rustls-tls", feature = "native-tls")))]
+#[cfg(not(any(
+    feature = "rustls-tls",
+    feature = "rustls-tls-native-roots",
+    feature = "native-tls"
+)))]
 use tokio_tungstenite::connect_async_with_config;
 use tokio_tungstenite::{
     tungstenite::{
@@ -65,16 +80,28 @@ impl Serialize for Error {
 #[derive(Default)]
 struct ConnectionManager(Mutex<HashMap<Id, WebSocketWriter>>);
 
-#[cfg(any(feature = "rustls-tls", feature = "native-tls"))]
+#[cfg(any(
+    feature = "rustls-tls",
+    feature = "rustls-tls-native-roots",
+    feature = "native-tls"
+))]
 struct TlsConnector(Mutex<Option<Connector>>);
 
 #[derive(Deserialize)]
+#[serde(untagged, rename_all = "camelCase")]
+enum Max {
+    None,
+    Number(usize),
+}
+
+#[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct ConnectionConfig {
+pub(crate) struct ConnectionConfig {
+    pub read_buffer_size: Option<usize>,
     pub write_buffer_size: Option<usize>,
     pub max_write_buffer_size: Option<usize>,
-    pub max_message_size: Option<usize>,
-    pub max_frame_size: Option<usize>,
+    pub max_message_size: Option<Max>,
+    pub max_frame_size: Option<Max>,
     #[serde(default)]
     pub accept_unmasked_frames: bool,
     pub headers: Option<Vec<(String, String)>>,
@@ -82,18 +109,38 @@ pub struct ConnectionConfig {
 
 impl From<ConnectionConfig> for WebSocketConfig {
     fn from(config: ConnectionConfig) -> Self {
-        // Disabling the warning on max_send_queue which we don't use anymore since it was deprecated.
-        #[allow(deprecated)]
-        Self {
-            max_send_queue: None,
-            write_buffer_size: config.write_buffer_size.unwrap_or(128 * 1024),
-            max_write_buffer_size: config.max_write_buffer_size.unwrap_or(usize::MAX),
-            // This may be harmful since if it's not provided from js we're overwriting the default value with None, meaning no size limit.
-            max_message_size: config.max_message_size,
-            // This may be harmful since if it's not provided from js we're overwriting the default value with None, meaning no size limit.
-            max_frame_size: config.max_frame_size,
-            accept_unmasked_frames: config.accept_unmasked_frames,
+        let mut builder =
+            WebSocketConfig::default().accept_unmasked_frames(config.accept_unmasked_frames);
+
+        if let Some(read_buffer_size) = config.read_buffer_size {
+            builder = builder.read_buffer_size(read_buffer_size)
         }
+
+        if let Some(write_buffer_size) = config.write_buffer_size {
+            builder = builder.write_buffer_size(write_buffer_size)
+        }
+
+        if let Some(max_write_buffer_size) = config.max_write_buffer_size {
+            builder = builder.max_write_buffer_size(max_write_buffer_size)
+        }
+
+        if let Some(max_message_size) = config.max_message_size {
+            let max_size = match max_message_size {
+                Max::None => Option::None,
+                Max::Number(n) => Some(n),
+            };
+            builder = builder.max_message_size(max_size);
+        }
+
+        if let Some(max_frame_size) = config.max_frame_size {
+            let max_size = match max_frame_size {
+                Max::None => Option::None,
+                Max::Number(n) => Some(n),
+            };
+            builder = builder.max_frame_size(max_size);
+        }
+
+        builder
     }
 }
 
@@ -117,7 +164,7 @@ enum WebSocketMessage {
 async fn connect<R: Runtime>(
     window: Window<R>,
     url: String,
-    on_message: Channel,
+    on_message: Channel<serde_json::Value>,
     config: Option<ConnectionConfig>,
 ) -> Result<Id> {
     let id = rand::random();
@@ -131,17 +178,29 @@ async fn connect<R: Runtime>(
         }
     }
 
-    #[cfg(any(feature = "rustls-tls", feature = "native-tls"))]
+    #[cfg(any(
+        feature = "rustls-tls",
+        feature = "rustls-tls-native-roots",
+        feature = "native-tls"
+    ))]
     let tls_connector = match window.try_state::<TlsConnector>() {
         Some(tls_connector) => tls_connector.0.lock().await.clone(),
         None => None,
     };
 
-    #[cfg(any(feature = "rustls-tls", feature = "native-tls"))]
+    #[cfg(any(
+        feature = "rustls-tls",
+        feature = "rustls-tls-native-roots",
+        feature = "native-tls"
+    ))]
     let (ws_stream, _) =
         connect_async_tls_with_config(request, config.map(Into::into), false, tls_connector)
             .await?;
-    #[cfg(not(any(feature = "rustls-tls", feature = "native-tls")))]
+    #[cfg(not(any(
+        feature = "rustls-tls",
+        feature = "rustls-tls-native-roots",
+        feature = "native-tls"
+    )))]
     let (ws_stream, _) = connect_async_with_config(request, config.map(Into::into), false).await?;
 
     tauri::async_runtime::spawn(async move {
@@ -159,21 +218,21 @@ async fn connect<R: Runtime>(
 
                 let response = match message {
                     Ok(Message::Text(t)) => {
-                        serde_json::to_value(WebSocketMessage::Text(t)).unwrap()
+                        serde_json::to_value(WebSocketMessage::Text(t.to_string())).unwrap()
                     }
                     Ok(Message::Binary(t)) => {
-                        serde_json::to_value(WebSocketMessage::Binary(t)).unwrap()
+                        serde_json::to_value(WebSocketMessage::Binary(t.to_vec())).unwrap()
                     }
                     Ok(Message::Ping(t)) => {
-                        serde_json::to_value(WebSocketMessage::Ping(t)).unwrap()
+                        serde_json::to_value(WebSocketMessage::Ping(t.to_vec())).unwrap()
                     }
                     Ok(Message::Pong(t)) => {
-                        serde_json::to_value(WebSocketMessage::Pong(t)).unwrap()
+                        serde_json::to_value(WebSocketMessage::Pong(t.to_vec())).unwrap()
                     }
                     Ok(Message::Close(t)) => {
                         serde_json::to_value(WebSocketMessage::Close(t.map(|v| CloseFrame {
                             code: v.code.into(),
-                            reason: v.reason.into_owned(),
+                            reason: v.reason.to_string(),
                         })))
                         .unwrap()
                     }
@@ -199,13 +258,13 @@ async fn send(
     if let Some(write) = manager.0.lock().await.get_mut(&id) {
         write
             .send(match message {
-                WebSocketMessage::Text(t) => Message::Text(t),
-                WebSocketMessage::Binary(t) => Message::Binary(t),
-                WebSocketMessage::Ping(t) => Message::Ping(t),
-                WebSocketMessage::Pong(t) => Message::Pong(t),
+                WebSocketMessage::Text(t) => Message::Text(t.into()),
+                WebSocketMessage::Binary(t) => Message::Binary(t.into()),
+                WebSocketMessage::Ping(t) => Message::Ping(t.into()),
+                WebSocketMessage::Pong(t) => Message::Pong(t.into()),
                 WebSocketMessage::Close(t) => Message::Close(t.map(|v| ProtocolCloseFrame {
                     code: v.code.into(),
-                    reason: std::borrow::Cow::Owned(v.reason),
+                    reason: v.reason.into(),
                 })),
             })
             .await?;
@@ -240,8 +299,21 @@ impl Builder {
         PluginBuilder::new("websocket")
             .invoke_handler(tauri::generate_handler![connect, send])
             .setup(|app, _api| {
+                #[cfg(any(feature = "rustls-tls", feature = "rustls-tls-native-roots"))]
+                if (self.tls_connector.is_none()
+                    || matches!(self.tls_connector, Some(Connector::Plain)))
+                    && rustls::crypto::CryptoProvider::get_default().is_none()
+                {
+                    // This can only fail if there is already a default provider which we checked for already.
+                    let _ = rustls::crypto::ring::default_provider().install_default();
+                }
+
                 app.manage(ConnectionManager::default());
-                #[cfg(any(feature = "rustls-tls", feature = "native-tls"))]
+                #[cfg(any(
+                    feature = "rustls-tls",
+                    feature = "rustls-tls-native-roots",
+                    feature = "native-tls"
+                ))]
                 app.manage(TlsConnector(Mutex::new(self.tls_connector)));
                 Ok(())
             })

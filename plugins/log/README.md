@@ -2,9 +2,17 @@
 
 Configurable logging for your Tauri app.
 
+| Platform | Supported |
+| -------- | --------- |
+| Linux    | ✓         |
+| Windows  | ✓         |
+| macOS    | ✓         |
+| Android  | ✓         |
+| iOS      | ✓         |
+
 ## Install
 
-_This plugin requires a Rust version of at least **1.75**_
+_This plugin requires a Rust version of at least **1.77.2**_
 
 There are three general methods of installation that we can recommend.
 
@@ -18,7 +26,7 @@ Install the Core plugin by adding the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-tauri-plugin-log = "2.0.0-beta"
+tauri-plugin-log = "2.0.0"
 # alternatively with Git:
 tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 ```
@@ -27,28 +35,35 @@ If you want the single instance mechanism to only trigger for semver compatible 
 
 Then you can install the JavaScript Guest bindings using your preferred JavaScript package manager:
 
-> Note: Since most JavaScript package managers are unable to install packages from git monorepos we provide read-only mirrors of each plugin. This makes installation option 2 more ergonomic to use.
-
 ```sh
 pnpm add @tauri-apps/plugin-log
 # or
 npm add @tauri-apps/plugin-log
 # or
 yarn add @tauri-apps/plugin-log
-
-# alternatively with Git:
-pnpm add https://github.com/tauri-apps/tauri-plugin-log#v2
-# or
-npm add https://github.com/tauri-apps/tauri-plugin-log#v2
-# or
-yarn add https://github.com/tauri-apps/tauri-plugin-log#v2
 ```
 
 ## Usage
 
-First you need to register the core plugin with Tauri:
+First, you should enable the `log:default` capability:
 
-`src-tauri/src/main.rs`
+```json
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "opener:default",
+    "log:default" # add this!
+  ]
+}
+```
+
+Then, you need to register the core plugin with Tauri:
+
+`src-tauri/src/lib.rs`
 
 ```rust
 use tauri_plugin_log::{Target, TargetKind};
@@ -68,17 +83,17 @@ fn main() {
 Afterwards all the plugin's APIs are available through the JavaScript guest bindings:
 
 ```javascript
-import { trace, info, error, attachConsole } from "@tauri-apps/plugin-log";
+import { trace, info, error, attachConsole } from '@tauri-apps/plugin-log'
 
 // with TargetKind::Webview enabled this function will print logs to the browser console
-const detach = await attachConsole();
+const detach = await attachConsole()
 
-trace("Trace");
-info("Info");
-error("Error");
+trace('Trace')
+info('Info')
+error('Error')
 
 // detach the browser console from the log stream
-detach();
+detach()
 ```
 
 To log from rust code, add the log crate to your `Cargo.toml`:

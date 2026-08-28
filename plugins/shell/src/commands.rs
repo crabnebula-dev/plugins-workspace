@@ -11,8 +11,9 @@ use tauri::{
     Manager, Runtime, State, Window,
 };
 
+#[allow(deprecated)]
+use crate::open::Program;
 use crate::{
-    open::Program,
     process::{CommandEvent, TerminatedPayload},
     scope::ExecuteArgs,
     Shell,
@@ -23,7 +24,7 @@ type ChildId = u32;
 #[derive(Debug, Clone, Serialize)]
 #[serde(tag = "event", content = "payload")]
 #[non_exhaustive]
-enum JSCommandEvent {
+pub enum JSCommandEvent {
     /// Stderr bytes until a newline (\n) or carriage return (\r) is found.
     Stderr(Buffer),
     /// Stdout bytes until a newline (\n) or carriage return (\r) is found.
@@ -114,7 +115,12 @@ fn prepare_cmd<R: Runtime>(
     let mut command = if options.sidecar {
         let program = PathBuf::from(program);
         let program_as_string = program.display().to_string();
-        let program_no_ext_as_string = program.with_extension("").display().to_string();
+        let has_extension = program.extension().is_some_and(|ext| ext == "exe");
+        let program_no_ext_as_string = if has_extension {
+            program.with_extension("").display().to_string()
+        } else {
+            program_as_string.clone()
+        };
         let configured_sidecar = window
             .config()
             .bundle
@@ -233,7 +239,7 @@ pub fn spawn<R: Runtime>(
     shell: State<'_, Shell<R>>,
     program: String,
     args: ExecuteArgs,
-    on_event: Channel,
+    on_event: Channel<JSCommandEvent>,
     options: CommandOptions,
     command_scope: CommandScope<crate::scope::ScopeAllowedCommand>,
     global_scope: GlobalScope<crate::scope::ScopeAllowedCommand>,
@@ -254,14 +260,14 @@ pub fn spawn<R: Runtime>(
             };
             let js_event = JSCommandEvent::new(event, encoding);
 
-            if on_event.send(&js_event).is_err() {
+            if on_event.send(js_event.clone()).is_err() {
                 fn send<'a>(
-                    on_event: &'a Channel,
+                    on_event: &'a Channel<JSCommandEvent>,
                     js_event: &'a JSCommandEvent,
                 ) -> Pin<Box<dyn Future<Output = ()> + Send + 'a>> {
                     Box::pin(async move {
                         tokio::time::sleep(std::time::Duration::from_millis(15)).await;
-                        if on_event.send(js_event).is_err() {
+                        if on_event.send(js_event.clone()).is_err() {
                             send(on_event, js_event).await;
                         }
                     })
@@ -302,12 +308,13 @@ pub fn kill<R: Runtime>(
     Ok(())
 }
 
+#[allow(deprecated)]
 #[tauri::command]
-pub fn open<R: Runtime>(
+pub async fn open<R: Runtime>(
     _window: Window<R>,
     shell: State<'_, Shell<R>>,
     path: String,
     with: Option<Program>,
 ) -> crate::Result<()> {
-    shell.open(path, with)
+    crate::open::open(Some(&shell.open_scope), path, with)
 }

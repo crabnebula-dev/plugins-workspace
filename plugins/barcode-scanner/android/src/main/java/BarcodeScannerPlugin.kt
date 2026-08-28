@@ -42,7 +42,6 @@ import app.tauri.annotation.Permission
 import app.tauri.annotation.PermissionCallback
 import app.tauri.annotation.TauriPlugin
 import app.tauri.plugin.Invoke
-import app.tauri.plugin.JSArray
 import app.tauri.plugin.JSObject
 import app.tauri.plugin.Plugin
 import com.google.common.util.concurrent.ListenableFuture
@@ -50,13 +49,11 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import org.json.JSONException
 import java.util.Collections
 import java.util.concurrent.ExecutionException
 
 private const val PERMISSION_ALIAS_CAMERA = "camera"
 private const val PERMISSION_NAME = Manifest.permission.CAMERA
-private const val PREFS_PERMISSION_FIRST_TIME_ASKING = "PREFS_PERMISSION_FIRST_TIME_ASKING"
 
 @InvokeArg
 class ScanOptions {
@@ -356,17 +353,6 @@ class BarcodeScannerPlugin(private val activity: Activity) : Plugin(activity),
         }
     }
 
-    private fun markFirstPermissionRequest() {
-        val sharedPreference: SharedPreferences =
-            activity.getSharedPreferences(PREFS_PERMISSION_FIRST_TIME_ASKING, MODE_PRIVATE)
-        sharedPreference.edit().putBoolean(PERMISSION_NAME, false).apply()
-    }
-
-    private fun firstPermissionRequest(): Boolean {
-        return activity.getSharedPreferences(PREFS_PERMISSION_FIRST_TIME_ASKING, MODE_PRIVATE)
-            .getBoolean(PERMISSION_NAME, true)
-    }
-
     @SuppressLint("ObsoleteSdkInt")
     @PermissionCallback
     fun cameraPermissionCallback(invoke: Invoke) {
@@ -382,9 +368,7 @@ class BarcodeScannerPlugin(private val activity: Activity) : Plugin(activity),
             requestPermissionResponse.put(PERMISSION_ALIAS_CAMERA, PermissionState.GRANTED)
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!activity.shouldShowRequestPermissionRationale(PERMISSION_NAME)) {
-                    requestPermissionResponse.put(PERMISSION_ALIAS_CAMERA, PermissionState.DENIED)
-                }
+                requestPermissionResponse.put(PERMISSION_ALIAS_CAMERA, PermissionState.DENIED)
             } else {
                 requestPermissionResponse.put(PERMISSION_ALIAS_CAMERA, PermissionState.GRANTED)
             }
@@ -403,20 +387,12 @@ class BarcodeScannerPlugin(private val activity: Activity) : Plugin(activity),
             requestPermissionResponse.put(PERMISSION_ALIAS_CAMERA, PermissionState.GRANTED)
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (firstPermissionRequest() || activity.shouldShowRequestPermissionRationale(
-                        PERMISSION_NAME
-                    )
-                ) {
-                    markFirstPermissionRequest()
-                    requestPermissionForAlias(
-                        PERMISSION_ALIAS_CAMERA,
-                        invoke,
-                        "cameraPermissionCallback"
-                    )
-                    return
-                } else {
-                    requestPermissionResponse.put(PERMISSION_ALIAS_CAMERA, PermissionState.DENIED)
-                }
+                requestPermissionForAlias(
+                    PERMISSION_ALIAS_CAMERA,
+                    invoke,
+                    "cameraPermissionCallback"
+                )
+                return
             } else {
                 requestPermissionResponse.put(PERMISSION_ALIAS_CAMERA, PermissionState.GRANTED)
             }

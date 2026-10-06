@@ -4900,9 +4900,9 @@ dependencies = [
 
 [[package]]
 name = "objc2-local-authentication"
-version = "0.3.2"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e48e0b8b339e0d9d2ed4416b7f93f9d4daadff7d4dd797f89867cde11aeac607"
+checksum = "6fc4c269ebb5210f5ae57ce061e08ec05cf35a6fb4a5d8287c7d4b1776ea6700"
 dependencies = [
  "block2",
  "objc2",

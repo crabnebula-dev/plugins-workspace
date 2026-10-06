@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 /// Options for [`Biometric::authenticate`](crate::Biometric::authenticate).
 #[derive(Debug, Default, Serialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", default)]
 pub struct AuthOptions {
     /// Enables authentication using the device's password. This feature is available on both Android and iOS.
     pub allow_device_credential: bool,
@@ -23,7 +23,7 @@ pub struct AuthOptions {
 }
 
 /// The kind of biometry hardware detected on the device.
-#[derive(Debug, Clone, serde_repr::Deserialize_repr)]
+#[derive(Debug, Clone, serde_repr::Deserialize_repr, serde_repr::Serialize_repr)]
 #[repr(u8)]
 pub enum BiometryType {
     /// No biometry hardware is available, or it is not enrolled with the operating system.
@@ -36,7 +36,7 @@ pub enum BiometryType {
 
 /// The result of [`Biometric::status`](crate::Biometric::status), describing whether biometric
 /// authentication can currently be used.
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
     /// Whether the device can currently authenticate using biometrics.

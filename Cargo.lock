@@ -209,7 +209,7 @@ checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
 
 [[package]]
 name = "api"
-version = "3.0.0-alpha.2"
+version = "3.0.0-alpha.3"
 dependencies = [
  "log",
  "serde",
@@ -4899,6 +4899,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "objc2-local-authentication"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e48e0b8b339e0d9d2ed4416b7f93f9d4daadff7d4dd797f89867cde11aeac607"
+dependencies = [
+ "block2",
+ "objc2",
+ "objc2-foundation",
+]
+
+[[package]]
 name = "objc2-osa-kit"
 version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7792,7 +7803,11 @@ dependencies = [
 name = "tauri-plugin-biometric"
 version = "3.0.0-alpha.2"
 dependencies = [
+ "block2",
  "log",
+ "objc2",
+ "objc2-foundation",
+ "objc2-local-authentication",
  "serde",
  "serde_json",
  "serde_repr",
@@ -7848,7 +7863,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-dialog"
-version = "3.0.0-alpha.2"
+version = "3.0.0-alpha.3"
 dependencies = [
  "log",
  "raw-window-handle",
